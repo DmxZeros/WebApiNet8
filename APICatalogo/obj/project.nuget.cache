@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZpRqekvi8YlJjI+oGPPakRhGJ9LjCyXzwhKdnRNMUprD0vupST5H38u+0YBoEYN0T0NheoUHdh9h6bV4yHsoPw==",
+  "dgSpecHash": "9+PQuCnzb2Z6SAtr0Gel7BkBO88HCU4m9YXDknoP6Nj6wxjMGR9ZAtCR26OAbKGUqXFcPI4L8534SXD70nvqew==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Mac01\\Desktop\\Net8\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
+  "projectFilePath": "C:\\Users\\Mac01\\Desktop\\Api Net 8\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mac01\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\Mac01\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

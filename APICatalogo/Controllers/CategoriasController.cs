@@ -1,5 +1,7 @@
 ﻿using APICatalogo.Context;
+using APICatalogo.Interfaces;
 using APICatalogo.Models;
+using APICatalogo.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,26 +12,12 @@ namespace APICatalogo.Controllers
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        private readonly AppDbContext _contexto;
-
-        public CategoriasController(AppDbContext contexto)
+        //private readonly IRepository<Categoria> _repository;
+        private readonly IUnitOfWork _unitOfWork;
+        
+        public CategoriasController(IUnitOfWork unitOfWork)
         {
-            _contexto = contexto;
-        }
-
-        [HttpGet("produtos")]
-        public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
-        {
-            try
-            {
-                return _contexto.Categorias.Include(p => p.Produtos).ToList();
-            }
-            catch (Exception)
-            {
-
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Ocorreu um problema ao tratar a sua solicitação");
-            }
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -37,7 +25,9 @@ namespace APICatalogo.Controllers
         {
             try
             {
-                return _contexto.Categorias.ToList();
+                var categorias = _unitOfWork.CategoriaRepository.GetAll();
+
+                return Ok(categorias);
             }
             catch (Exception)
             {
@@ -52,7 +42,7 @@ namespace APICatalogo.Controllers
         {
             try
             {
-                var categoria = _contexto.Categorias.FirstOrDefault(c => c.CategoriaId == id);
+                var categoria = _unitOfWork.CategoriaRepository.Get(c => c.CategoriaId == id);
 
                 if (categoria is null)
                 {
@@ -80,11 +70,11 @@ namespace APICatalogo.Controllers
                     return BadRequest("Dados inválidos");
                 }
 
-                _contexto.Categorias.Add(categoria);
-                _contexto.SaveChanges();
+                var categoriaCriada = _unitOfWork.CategoriaRepository.Create(categoria);
+                _unitOfWork.Commit();
 
                 return new CreatedAtRouteResult("ObterCategoria",
-                    new { id = categoria.CategoriaId }, categoria);
+                    new { id = categoriaCriada.CategoriaId }, categoriaCriada);
             }
             catch (Exception)
             {
@@ -104,8 +94,9 @@ namespace APICatalogo.Controllers
                     return BadRequest("Dados inválidos");
                 }
 
-                _contexto.Entry(categoria).State = EntityState.Modified;
-                _contexto.SaveChanges();
+                _unitOfWork.CategoriaRepository.Update(categoria);
+                _unitOfWork.Commit();
+
                 return Ok(categoria);
             }
             catch (Exception)
@@ -121,15 +112,16 @@ namespace APICatalogo.Controllers
         {
             try
             {
-                var categoria = _contexto.Categorias.FirstOrDefault(c => c.CategoriaId == id);
+                var categoria = _unitOfWork.CategoriaRepository.Get(c => c.CategoriaId == id);
 
                 if (categoria == null)
                 {
                     return NotFound($"Categoria com id= {id} não encontrada");
                 }
 
-                _contexto.Categorias.Remove(categoria);
-                _contexto.SaveChanges();
+                var categoriaExcluida = _unitOfWork.CategoriaRepository.Delete(categoria);
+                _unitOfWork.Commit();
+                
                 return Ok(categoria);
             }
             catch (Exception)

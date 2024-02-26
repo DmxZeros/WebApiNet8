@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using APICatalogo.Validations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -10,8 +11,9 @@ namespace APICatalogo.Models
         [Key]
         public int ProdutoId { get; set; }
 
-        [Required]
-        [StringLength(80)]
+        [Required(ErrorMessage = "O nome é obrigatório")]
+        [StringLength(80, ErrorMessage = "O nome deve ter no máximo {1} e no mínimo {2} caracteres", MinimumLength = 3)]
+        [PrimeiraLetraMaiuscula]
         public string? Nome { get; set; }
 
         [Required]
@@ -20,6 +22,7 @@ namespace APICatalogo.Models
 
         [Required]
         [Column(TypeName = "decimal(10,2)")]
+        [Range(1,99999, ErrorMessage = "O preço deve estar entre {1} e {2}")]
         public decimal Preco { get; set; }
 
         [Required]
@@ -36,5 +39,20 @@ namespace APICatalogo.Models
         
         [JsonIgnore]
         public Categoria? Categoria { get; set; }
+
+        //Validacao Personalizada
+        public IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
+        {
+            if(this.Estoque < 0)
+            {
+                yield return new
+                    ValidationResult("O estoque deve ser maior que zero",
+                        new[]
+                        {
+                            nameof(this.Estoque)
+                        }
+                    );
+            }
+        }
     }
 }
