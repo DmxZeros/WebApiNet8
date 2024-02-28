@@ -1,4 +1,5 @@
 using APICatalogo.Context;
+using APICatalogo.DTOs.Mappings;
 using APICatalogo.Interfaces;
 using APICatalogo.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,9 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions
         .ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+//auto mapper
+builder.Services.AddAutoMapper(typeof(ProdutoDTOMappingProfile));
 
 //repositorios
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

@@ -1,4 +1,6 @@
 ﻿using APICatalogo.Context;
+using APICatalogo.DTOs;
+using APICatalogo.DTOs.Mappings;
 using APICatalogo.Interfaces;
 using APICatalogo.Models;
 using APICatalogo.Repositories;
@@ -21,13 +23,20 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Categoria>> Get()
+        public ActionResult<IEnumerable<CategoriaDTO>> Get()
         {
             try
             {
                 var categorias = _unitOfWork.CategoriaRepository.GetAll();
 
-                return Ok(categorias);
+                if(categorias is null) 
+                {
+                    return NotFound("Não existem categorias");
+                }
+
+                var categoriasDTO = categorias.ToCategoriaDTOList();
+
+                return Ok(categoriasDTO);
             }
             catch (Exception)
             {
@@ -38,7 +47,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("{id:int}", Name = "ObterCategoria")]  
-        public ActionResult<Categoria> Get(int id)
+        public ActionResult<CategoriaDTO> Get(int id)
         {
             try
             {
@@ -49,7 +58,9 @@ namespace APICatalogo.Controllers
                     return NotFound($"Categoria com id= {id} não encontrada");
                 }
 
-                return Ok(categoria);
+                var categoriaDTO = categoria.ToCategoriaDTO();
+
+                return Ok(categoriaDTO);
             }
             catch (Exception)
             {
@@ -59,22 +70,25 @@ namespace APICatalogo.Controllers
             }
         }
 
-
         [HttpPost]
-        public ActionResult Post(Categoria categoria)
+        public ActionResult<CategoriaDTO> Post(CategoriaDTO categoriaDTO)
         {
             try
             {
-                if (categoria is null)
+                if (categoriaDTO is null)
                 {
                     return BadRequest("Dados inválidos");
                 }
 
+                var categoria = categoriaDTO.ToCategoria();
+
                 var categoriaCriada = _unitOfWork.CategoriaRepository.Create(categoria);
                 _unitOfWork.Commit();
 
+                var novaCategoriaDTO = categoriaCriada.ToCategoriaDTO();
+
                 return new CreatedAtRouteResult("ObterCategoria",
-                    new { id = categoriaCriada.CategoriaId }, categoriaCriada);
+                    new { id = novaCategoriaDTO.CategoriaId }, novaCategoriaDTO);
             }
             catch (Exception)
             {
@@ -85,19 +99,22 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPut ("{id:int}")]
-        public ActionResult Put(int id, Categoria categoria) 
+        public ActionResult<CategoriaDTO> Put(int id, CategoriaDTO categoriaDTO) 
         {
             try
             {
-                if (id != categoria.CategoriaId)
+                if (id != categoriaDTO.CategoriaId)
                 {
                     return BadRequest("Dados inválidos");
                 }
 
-                _unitOfWork.CategoriaRepository.Update(categoria);
+                var categoria = categoriaDTO.ToCategoria();
+                var categoriaAtualizada = _unitOfWork.CategoriaRepository.Update(categoria);
                 _unitOfWork.Commit();
 
-                return Ok(categoria);
+                var categoriaAtualizadaDTO = categoriaAtualizada.ToCategoriaDTO();
+
+                return Ok(categoriaAtualizadaDTO);
             }
             catch (Exception)
             {
@@ -108,7 +125,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        public ActionResult<CategoriaDTO> Delete(int id)
         {
             try
             {
@@ -121,8 +138,10 @@ namespace APICatalogo.Controllers
 
                 var categoriaExcluida = _unitOfWork.CategoriaRepository.Delete(categoria);
                 _unitOfWork.Commit();
-                
-                return Ok(categoria);
+
+                var categoriaExcluidaDTO = categoriaExcluida.ToCategoriaDTO();
+
+                return Ok(categoriaExcluidaDTO);
             }
             catch (Exception)
             {
