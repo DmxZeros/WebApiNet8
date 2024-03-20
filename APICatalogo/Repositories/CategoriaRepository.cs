@@ -13,26 +13,29 @@ namespace APICatalogo.Repositories
             
         }
 
-        public PagedList<Categoria> GetCategorias(CategoriasParameters categoriasParameters)
+        public async Task<PagedList<Categoria>> GetCategoriasAsync(CategoriasParameters categoriasParameters)
         {
-            var categorias = GetAll().OrderBy(c => c.CategoriaId).AsQueryable();
+            var categorias = await GetAllAsync();
 
-            var categoriasOrdenadas = PagedList<Categoria>.ToPagedList(categorias, 
+            var categoriasOrdenadas = categorias.OrderBy(c => c.CategoriaId).AsQueryable();
+
+
+            var resultado = PagedList<Categoria>.ToPagedList(categoriasOrdenadas, 
                 categoriasParameters.PageNumber, categoriasParameters.PageSize);
 
-            return categoriasOrdenadas;
+            return resultado;
         }
 
-        public PagedList<Categoria> GetCategoriasFiltrarNome(CategoriasFiltroNome categoriasFiltroNome)
+        public async Task<PagedList<Categoria>> GetCategoriasFiltrarNomeAsync(CategoriasFiltroNome categoriasFiltroNome)
         {
-            var categorias = GetAll().AsQueryable();
+            var categorias = await GetAllAsync();
 
             if(!string.IsNullOrEmpty(categoriasFiltroNome.Nome))
             {
                 categorias = categorias.Where(c => c.Nome.Contains(categoriasFiltroNome.Nome));
             }
 
-            var categoriasFiltradas = PagedList<Categoria>.ToPagedList(categorias,
+            var categoriasFiltradas = PagedList<Categoria>.ToPagedList(categorias.AsQueryable(),
                                         categoriasFiltroNome.PageNumber, categoriasFiltroNome.PageSize);
 
             return categoriasFiltradas;

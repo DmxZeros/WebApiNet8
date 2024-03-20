@@ -1,5 +1,6 @@
 ﻿using APICatalogo.Context;
 using APICatalogo.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Repositories
 {
@@ -31,9 +32,9 @@ namespace APICatalogo.Repositories
             }
         }
 
-        public void Commit()
+        public async Task CommitAsync()
         {
-            _contexto.SaveChanges();
+            await _contexto.SaveChangesAsync();
         }
 
         public void Dispose() 

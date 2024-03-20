@@ -276,3 +276,5 @@ C:\Users\Mac01\Desktop\Api Net 8\APICatalogo\APICatalogo\bin\Debug\net8.0\Micros
 C:\Users\Mac01\Desktop\Api Net 8\APICatalogo\APICatalogo\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\Mac01\Desktop\Api Net 8\APICatalogo\APICatalogo\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\Mac01\Desktop\Api Net 8\APICatalogo\APICatalogo\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
+C:\Users\Mac01\Desktop\Api Net 8\APICatalogo\apicatalogo\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Mac01\Desktop\Api Net 8\APICatalogo\apicatalogo\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

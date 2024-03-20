@@ -27,14 +27,14 @@ namespace APICatalogo.Repositories
             return entity;
         }
 
-        public T? Get(Expression<Func<T, bool>> predicate)
+        public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate)
         {
-            return _contexto.Set<T>().FirstOrDefault(predicate);
+            return await _contexto.Set<T>().FirstOrDefaultAsync(predicate);
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return _contexto.Set<T>().AsNoTracking().ToList();
+            return await _contexto.Set<T>().AsNoTracking().ToListAsync();
         }
 
         public T Update(T entity)
